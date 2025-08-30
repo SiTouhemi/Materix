@@ -19,10 +19,8 @@ import { format } from "date-fns";
 
 const Workspaces = () => {
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
-  const { data: workspaces, isLoading } = useGetWorkspacesQuery() as {
-    data: Workspace[];
-    isLoading: boolean;
-  };
+  const { data, isLoading } = useGetWorkspacesQuery();
+  const workspaces = data?.data?.workspaces || [];
 
   if (isLoading) {
     return <Loader />;

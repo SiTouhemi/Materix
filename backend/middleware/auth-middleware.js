@@ -3,6 +3,12 @@ import User from "../models/user.js";
 
 const authMiddleware = async (req, res, next) => {
   try {
+    if (!req.headers.authorization) {
+      return res.status(401).json({
+        message: "Authorization header is required",
+      });
+    }
+
     const token = req.headers.authorization.split(" ")[1]; //Bearer dhghjhdkjfg
 
     if (!token) {
