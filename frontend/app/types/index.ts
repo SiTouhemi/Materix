@@ -185,3 +185,17 @@ export interface WorkspaceProductivityData {
   completed: number;
   total: number;
 }
+
+export interface AdminData {
+  _id: string;
+  username: string;
+  email: string;
+  name: string;
+  role: 'super_admin' | 'admin' | 'editor';
+  isActive: boolean;
+  lastLogin?: string;
+  permissions: string[];
+  profilePicture?: string;
+  createdAt: string;
+  updatedAt: string;
+}
