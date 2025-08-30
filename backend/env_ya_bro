@@ -1,0 +1,4 @@
+MONGODB_URI=mongodb+srv://halim:halim2hemi@cluster0.o8zcnja.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+PORT=5000
+JWT_SECRET=***14125skibidididabdabdabyesyesskibidibi**123**
+FRONTEND_URL=http://localhost:5173
