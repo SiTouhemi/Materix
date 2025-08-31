@@ -136,7 +136,7 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="h-screen bg-slate-50 flex">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -218,7 +218,7 @@ const AdminLayout = () => {
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-64 flex-1 flex flex-col">
         {/* Mobile header */}
         <div className="lg:hidden bg-white border-b border-slate-200 px-4 py-3">
           <div className="flex items-center justify-between">
@@ -234,7 +234,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="flex-1 p-6 overflow-auto">
           <Outlet />
         </main>
       </div>
