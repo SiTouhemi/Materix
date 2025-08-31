@@ -2,3 +2,7 @@ MONGODB_URI=mongodb+srv://halim:halim2hemi@cluster0.o8zcnja.mongodb.net/?retryWr
 PORT=5000
 JWT_SECRET=***14125skibidididabdabdabyesyesskibidibi**123**
 FRONTEND_URL=http://localhost:5173
+
+CLOUDINARY_API_KEY=765989452911943
+CLOUDINARY_API_SECRET=qlQhbueyFJVNNksq7VMroi_toJk
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dhybn1h6o

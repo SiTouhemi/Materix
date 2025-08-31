@@ -16,12 +16,15 @@ import {
   bulkDeletePortfolioItems,
   getPortfolioCategories,
   toggleFeaturedStatus,
+  uploadPortfolioImage,
+  deletePortfolioImage,
 } from "../controllers/portfolio-controller.js";
 import {
   adminAuthMiddleware,
   requirePermission,
   requireRole,
 } from "../middleware/admin-auth-middleware.js";
+import { uploadSingle, handleUploadError } from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -52,5 +55,9 @@ router.put("/portfolio/:id/toggle-featured", requirePermission("manage_portfolio
 
 // Bulk operations
 router.delete("/portfolio/bulk", requirePermission("manage_portfolio"), bulkDeletePortfolioItems);
+
+// Image upload routes
+router.post("/portfolio/upload-image", requirePermission("manage_portfolio"), uploadSingle, handleUploadError, uploadPortfolioImage);
+router.delete("/portfolio/delete-image", requirePermission("manage_portfolio"), deletePortfolioImage);
 
 export default router;

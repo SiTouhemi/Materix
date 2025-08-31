@@ -6,7 +6,7 @@ import morgan from "morgan";
 
 import routes from "./routes/index.js";
 
-dotenv.config();
+dotenv.config({ path: './env_ya_bro' });
 
 const app = express();
 
@@ -41,6 +41,20 @@ const PORT = process.env.PORT || 5000;
 app.get("/", async (req, res) => {
   res.status(200).json({
     message: "Welcome to TaskHub API",
+  });
+});
+
+// Test endpoint to verify Cloudinary configuration
+app.get("/api/test-cloudinary", (req, res) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  
+  res.json({
+    cloudName: cloudName ? "Configured" : "Not configured",
+    apiKey: apiKey ? "Configured" : "Not configured",
+    apiSecret: apiSecret ? "Configured" : "Not configured",
+    allConfigured: !!(cloudName && apiKey && apiSecret)
   });
 });
 // http:localhost:500/api/

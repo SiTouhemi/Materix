@@ -33,6 +33,10 @@ const portfolioSchema = new Schema(
         type: String,
         required: true,
       },
+      public_id: {
+        type: String,
+        required: true,
+      },
       alt: {
         type: String,
         default: '',
@@ -44,6 +48,18 @@ const portfolioSchema = new Schema(
       order: {
         type: Number,
         default: 0,
+      },
+      width: {
+        type: Number,
+      },
+      height: {
+        type: Number,
+      },
+      format: {
+        type: String,
+      },
+      size: {
+        type: Number,
       },
     }],
     featured: {

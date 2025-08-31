@@ -108,6 +108,7 @@ const AdminPortfolioEdit = () => {
   const [newTag, setNewTag] = useState("");
   const [newImageUrl, setNewImageUrl] = useState("");
   const [newImageAlt, setNewImageAlt] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -372,6 +373,63 @@ const AdminPortfolioEdit = () => {
       ...formData,
       images: updatedImages,
     });
+  };
+
+  const uploadImageToCloudinary = async (file: File) => {
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch("/api/admin/portfolio/upload-image", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const newImage = {
+          url: data.data.url,
+          public_id: data.data.public_id,
+          alt: file.name || "Portfolio image",
+          isFeatured: formData.images.length === 0, // First image is featured by default
+          order: formData.images.length,
+          width: data.data.width,
+          height: data.data.height,
+          format: data.data.format,
+          size: data.data.size,
+        };
+        
+        setFormData(prev => ({
+          ...prev,
+          images: [...prev.images, newImage]
+        }));
+        return data.data.url;
+      } else {
+        throw new Error(data.message || "Failed to upload image");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      throw error;
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        await uploadImageToCloudinary(file);
+      } catch (error) {
+        setError("Failed to upload image. Please try again.");
+      }
+    }
   };
 
   const navigation = [
@@ -648,9 +706,9 @@ const AdminPortfolioEdit = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Current Images */}
-                {formData.images.length > 0 && (
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-slate-900">Current Images</h4>
+                <div className="space-y-4">
+                  <h4 className="font-medium text-slate-900">Current Images</h4>
+                  {formData.images.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {formData.images.map((image, index) => (
                         <div key={index} className="relative group">
@@ -659,7 +717,11 @@ const AdminPortfolioEdit = () => {
                             alt={image.alt}
                             className="w-full h-48 object-cover rounded-lg border border-slate-200"
                             onError={(e) => {
-                              e.currentTarget.src = "https://via.placeholder.com/400x300?text=Image+Not+Found";
+                              console.error("Image failed to load:", image.url);
+                              e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzY2NzM4NyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4=";
+                            }}
+                            onLoad={() => {
+                              console.log("Image loaded successfully:", image.url);
                             }}
                           />
                           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 rounded-lg flex items-center justify-center">
@@ -689,17 +751,66 @@ const AdminPortfolioEdit = () => {
                             </div>
                           )}
                         </div>
-                      ))}
-                    </div>
+                                              ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 border-2 border-dashed border-slate-300 rounded-lg">
+                        <div className="text-slate-400 mb-2">
+                          <ImageIcon className="h-12 w-12 mx-auto" />
+                        </div>
+                        <p className="text-slate-600">No images added yet</p>
+                        <p className="text-sm text-slate-500">Add images below to showcase your project</p>
+                      </div>
+                    )}
                   </div>
-                )}
 
                 {/* Add New Image */}
                 <div className="space-y-4">
                   <h4 className="font-medium text-slate-900">Add New Image</h4>
+                  
+                  {/* File Upload */}
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="fileUpload">Upload Image File</Label>
+                      <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-blue-400 transition-colors">
+                        <input
+                          id="fileUpload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          disabled={uploadingImage}
+                          className="hidden"
+                        />
+                        <label htmlFor="fileUpload" className="cursor-pointer">
+                          <div className="space-y-2">
+                            <Upload className="h-8 w-8 text-slate-400 mx-auto" />
+                            <div className="text-sm text-slate-600">
+                              {uploadingImage ? (
+                                <span>Uploading...</span>
+                              ) : (
+                                <span>Click to upload or drag and drop</span>
+                              )}
+                            </div>
+                            <div className="text-xs text-slate-500">PNG, JPG, GIF up to 5MB</div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Or add by URL */}
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-slate-300" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-white text-slate-500">Or add by URL</span>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="imageUrl">Image URL *</Label>
+                      <Label htmlFor="imageUrl">Image URL</Label>
                       <Input
                         id="imageUrl"
                         value={newImageUrl}
@@ -724,7 +835,7 @@ const AdminPortfolioEdit = () => {
                     className="flex items-center space-x-2"
                   >
                     <Upload className="h-4 w-4" />
-                    <span>Add Image</span>
+                    <span>Add Image by URL</span>
                   </Button>
                 </div>
               </CardContent>

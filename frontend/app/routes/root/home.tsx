@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
   Briefcase, 
-  Search, 
-  ExternalLink, 
-  Github,
-  Calendar,
-  Filter,
   Star,
   ArrowRight,
   Mail,
@@ -23,28 +19,9 @@ import {
   Users,
   Shield,
   Clock,
-  CheckCircle,
-  Quote,
-  Send,
-  Phone,
-  MapPin,
-  Sparkles,
-  Layers,
-  Database,
-  Server,
   Monitor,
-  Cpu,
-  Cloud,
   Rocket,
-  Target,
-  Award,
-  TrendingUp,
-  Play,
-  ChevronRight,
-  MousePointer,
-  Eye,
-  Heart,
-  MessageCircle
+  TrendingUp
 } from "lucide-react";
 import { Link } from "react-router";
 
@@ -57,6 +34,12 @@ interface PortfolioItem {
   status: string;
   featured: boolean;
   technologies: string[];
+  images: Array<{
+    url: string;
+    alt: string;
+    isFeatured: boolean;
+    order: number;
+  }>;
   liveUrl?: string;
   githubUrl?: string;
   behanceUrl?: string;
@@ -68,6 +51,90 @@ interface PortfolioItem {
 const Homepage = () => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.95
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 40,
+      scale: 0.9
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.7
+      }
+    }
+  };
+
+  const staggerContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.1
+      }
+    }
+  };
+
+  const textVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8
+      }
+    }
+  };
+
+  const heroVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 40 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1
+      }
+    }
+  };
 
   useEffect(() => {
     fetchPortfolioItems();
@@ -137,6 +204,15 @@ const Homepage = () => {
   // Featured projects for showcase
   const featuredProjects = portfolioItems.filter(item => item.featured).slice(0, 6);
 
+  // Filter projects based on active filter
+  const filteredProjects = activeFilter === 'all' 
+    ? featuredProjects 
+    : featuredProjects.filter(item => 
+        activeFilter === 'data_visualization' ? item.category === 'data_visualization' :
+        activeFilter === 'web_development' ? item.category === 'web_development' :
+        true
+      );
+
   const technologies = [
     { name: "React", category: "Frontend", level: 95 },
     { name: "TypeScript", category: "Frontend", level: 90 },
@@ -161,6 +237,49 @@ const Homepage = () => {
 
   return (
     <div className="min-h-screen bg-white scroll-smooth">
+      {/* Floating Code Elements */}
+      <div className="floating-code" style={{ top: '10%', left: '5%' }}>
+        {'<div className="hero">'}
+      </div>
+      <div className="floating-code" style={{ top: '20%', right: '10%' }}>
+        const app = express();
+      </div>
+      <div className="floating-code" style={{ top: '60%', left: '15%' }}>
+        function createProject() {'{'}
+      </div>
+      <div className="floating-code" style={{ top: '80%', right: '5%' }}>
+        npm install react
+      </div>
+      <div className="floating-code" style={{ top: '40%', left: '80%' }}>
+        git commit -m "feat"
+      </div>
+      <div className="floating-code" style={{ top: '120%', left: '70%' }}>
+        import React from 'react';
+      </div>
+      <div className="floating-code" style={{ top: '140%', left: '10%' }}>
+        useEffect function
+      </div>
+      <div className="floating-code" style={{ top: '160%', right: '20%' }}>
+        return div
+      </div>
+      <div className="floating-code" style={{ top: '200%', left: '30%' }}>
+        className container
+      </div>
+      <div className="floating-code" style={{ top: '240%', right: '15%' }}>
+        onClick handleClick
+      </div>
+      <div className="floating-code" style={{ top: '280%', left: '60%' }}>
+        useState(false)
+      </div>
+      <div className="floating-code" style={{ top: '320%', left: '20%' }}>
+        const [data, setData] = useState([]);
+      </div>
+      <div className="floating-code" style={{ top: '360%', right: '30%' }}>
+        fetch('/api/data')
+      </div>
+      <div className="floating-code" style={{ top: '400%', left: '50%' }}>
+        .then(response response.json())
+      </div>
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 transition-all duration-300">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -196,344 +315,476 @@ const Homepage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight transition-all duration-700 hover:scale-105">
+      <section className="pt-32 pb-20 bg-white code-bg-hero relative overflow-hidden">
+        <motion.div 
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          <motion.h1 
+            className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight transition-all duration-700 hover:scale-105"
+            variants={heroVariants}
+          >
             We Build Digital
             <span className="block text-gray-600">Excellence</span>
-          </h1>
+          </motion.h1>
           
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed transition-all duration-700">
+          <motion.p 
+            className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed transition-all duration-700"
+            variants={textVariants}
+          >
             Transform your business with modern web applications, clean designs, and scalable solutions that drive results.
-          </p>
+          </motion.p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <Link to="#portfolio">
-              <Button className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-                <span className="flex items-center">
-                  View Our Work
-                  <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                </span>
-              </Button>
-            </Link>
-            <Link to="#contact">
-              <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-                <span className="flex items-center">
-                  Start Your Project
-                  <Rocket className="h-5 w-5 ml-2 group-hover:translate-y-[-2px] transition-transform duration-300" />
-                </span>
-              </Button>
-            </Link>
-          </div>
+          <motion.div 
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            variants={staggerContainerVariants}
+          >
+            <motion.div variants={itemVariants}>
+              <Link to="#portfolio">
+                <Button className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+                  <span className="flex items-center">
+                    View Our Work
+                    <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                  </span>
+                </Button>
+              </Link>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Link to="#contact">
+                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+                  <span className="flex items-center">
+                    Start Your Project
+                    <Rocket className="h-5 w-5 ml-2 group-hover:translate-y-[-2px] transition-transform duration-300" />
+                  </span>
+                </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center group">
+          <motion.div 
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            variants={staggerContainerVariants}
+          >
+            <motion.div className="text-center group" variants={itemVariants}>
               <div className="text-3xl font-bold text-gray-900 mb-2 transition-all duration-300 group-hover:scale-110">50+</div>
               <div className="text-gray-600 transition-all duration-300 group-hover:text-gray-900">Projects Delivered</div>
-            </div>
-            <div className="text-center group">
+            </motion.div>
+            <motion.div className="text-center group" variants={itemVariants}>
               <div className="text-3xl font-bold text-gray-900 mb-2 transition-all duration-300 group-hover:scale-110">100%</div>
               <div className="text-gray-600 transition-all duration-300 group-hover:text-gray-900">Client Satisfaction</div>
-            </div>
-            <div className="text-center group">
+            </motion.div>
+            <motion.div className="text-center group" variants={itemVariants}>
               <div className="text-3xl font-bold text-gray-900 mb-2 transition-all duration-300 group-hover:scale-110">24/7</div>
               <div className="text-gray-600 transition-all duration-300 group-hover:text-gray-900">Support Available</div>
-            </div>
-            <div className="text-center group">
+            </motion.div>
+            <motion.div className="text-center group" variants={itemVariants}>
               <div className="text-3xl font-bold text-gray-900 mb-2 transition-all duration-300 group-hover:scale-110">5★</div>
               <div className="text-gray-600 transition-all duration-300 group-hover:text-gray-900">Average Rating</div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105">
+      <section id="services" className="py-20 bg-gray-50 code-bg-pattern relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105"
+              variants={textVariants}
+            >
               Our Services
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700">
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700"
+              variants={textVariants}
+            >
               We deliver clean, modern solutions that help businesses succeed online.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainerVariants}
+          >
             {/* Web Development */}
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardHeader className="pb-4">
-                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                  <Code className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
-                  Web Development
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
-                  Modern, responsive websites built with React, Node.js, and cutting-edge technologies.
-                </CardDescription>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">React</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Node.js</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">TypeScript</Badge>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    <Code className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
+                    Web Development
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
+                    Modern, responsive websites built with React, Node.js, and cutting-edge technologies.
+                  </CardDescription>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">React</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Node.js</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">TypeScript</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* UI/UX Design */}
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardHeader className="pb-4">
-                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                  <Palette className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
-                  UI/UX Design
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
-                  Clean, intuitive user interfaces and seamless user experiences.
-                </CardDescription>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Figma</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Adobe XD</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Sketch</Badge>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    <Palette className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
+                    UI/UX Design
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
+                    Clean, intuitive user interfaces and seamless user experiences.
+                  </CardDescription>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Figma</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Adobe XD</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Sketch</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* Mobile Apps */}
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardHeader className="pb-4">
-                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                  <Smartphone className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
-                  Mobile Apps
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
-                  Native and cross-platform mobile applications for all devices.
-                </CardDescription>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">React Native</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Flutter</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Swift</Badge>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    <Smartphone className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
+                    Mobile Apps
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
+                    Native and cross-platform mobile applications for all devices.
+                  </CardDescription>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">React Native</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Flutter</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Swift</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* E-commerce */}
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardHeader className="pb-4">
-                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                  <Globe className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
-                  E-commerce Solutions
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
-                  Complete online store solutions with secure payment processing.
-                </CardDescription>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Shopify</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">WooCommerce</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Stripe</Badge>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    <Globe className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
+                    E-commerce Solutions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
+                    Complete online store solutions with secure payment processing.
+                  </CardDescription>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Shopify</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">WooCommerce</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Stripe</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* API Integrations */}
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardHeader className="pb-4">
-                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
-                  API Integrations
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
-                  Seamless integration with third-party services and business tools.
-                </CardDescription>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">REST API</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">GraphQL</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">WebSockets</Badge>
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    <Zap className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
+                    API Integrations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
+                    Seamless integration with third-party services and business tools.
+                  </CardDescription>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">REST API</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">GraphQL</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">WebSockets</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* Maintenance */}
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardHeader className="pb-4">
-                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
-                  Maintenance & Support
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
-                  Ongoing maintenance, updates, and technical support.
-                </CardDescription>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">24/7 Support</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Security Updates</Badge>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Performance</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardHeader className="pb-4">
+                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                    <Shield className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl font-bold text-gray-900 transition-all duration-300 group-hover:text-gray-600">
+                    Maintenance & Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-600 mb-4 transition-all duration-300">
+                    Ongoing maintenance, updates, and technical support.
+                  </CardDescription>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">24/7 Support</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Security Updates</Badge>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">Performance</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Technologies Section */}
-      <section id="technologies" className="py-20 bg-white">
+      <section id="technologies" className="py-20 bg-white code-bg-pattern relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105"
+              variants={textVariants}
+            >
               Technologies We Use
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700">
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700"
+              variants={textVariants}
+            >
               We use modern, reliable technologies to build scalable and performant solutions.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <motion.div 
+            className="grid grid-cols-2 md:grid-cols-4 gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainerVariants}
+          >
             {technologies.map((tech) => (
-              <Card key={tech.name} className="bg-white border-gray-200 hover:shadow-lg transition-all duration-500 hover:-translate-y-1 group">
-                <CardContent className="p-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 transition-all duration-300 group-hover:scale-110">{tech.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4 transition-all duration-300">{tech.category}</p>
-                  
-                  {/* Skill Level Bar */}
-                  <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                    <div 
-                      className="bg-gray-900 h-2 rounded-full transition-all duration-1000 group-hover:bg-gray-700"
-                      style={{ width: `${tech.level}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-xs text-gray-500 transition-all duration-300 group-hover:text-gray-700">{tech.level}% Proficiency</span>
-                </CardContent>
-              </Card>
+              <motion.div key={tech.name} variants={cardVariants}>
+                <Card className="bg-white border-gray-200 hover:shadow-lg transition-all duration-500 hover:-translate-y-1 group">
+                  <CardContent className="p-6 text-center">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 transition-all duration-300 group-hover:scale-110">{tech.name}</h3>
+                    <p className="text-sm text-gray-600 mb-4 transition-all duration-300">{tech.category}</p>
+                    
+                    {/* Skill Level Bar */}
+                    <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                      <div 
+                        className="bg-gray-900 h-2 rounded-full transition-all duration-1000 group-hover:bg-gray-700"
+                        style={{ width: `${tech.level}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-gray-500 transition-all duration-300 group-hover:text-gray-700">{tech.level}% Proficiency</span>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-20 bg-gray-50">
+      <section id="portfolio" className="py-20 bg-gray-900 code-bg-dark relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-white mb-4 transition-all duration-700 hover:scale-105"
+              variants={textVariants}
+            >
               Our Portfolio
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700">
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-300 max-w-2xl mx-auto transition-all duration-700"
+              variants={textVariants}
+            >
               Explore our latest projects and see how we've helped businesses achieve their goals.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          {featuredProjects.length === 0 ? (
+          {/* Filter Navigation */}
+          <motion.div 
+            className="flex justify-center mb-12"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.div 
+              className="flex space-x-8"
+              variants={staggerContainerVariants}
+            >
+              <motion.button 
+                onClick={() => setActiveFilter('all')}
+                className={`font-medium text-lg transition-all duration-300 hover:text-blue-300 ${
+                  activeFilter === 'all' ? 'text-blue-400' : 'text-white hover:text-gray-300'
+                }`}
+                variants={itemVariants}
+              >
+                All
+              </motion.button>
+              <motion.button 
+                onClick={() => setActiveFilter('data_visualization')}
+                className={`font-medium text-lg transition-all duration-300 hover:text-blue-300 ${
+                  activeFilter === 'data_visualization' ? 'text-blue-400' : 'text-white hover:text-gray-300'
+                }`}
+                variants={itemVariants}
+              >
+                Data Visualization
+              </motion.button>
+              <motion.button 
+                onClick={() => setActiveFilter('web_development')}
+                className={`font-medium text-lg transition-all duration-300 hover:text-blue-300 ${
+                  activeFilter === 'web_development' ? 'text-blue-400' : 'text-white hover:text-gray-300'
+                }`}
+                variants={itemVariants}
+              >
+                Web Development
+              </motion.button>
+            </motion.div>
+          </motion.div>
+
+          {filteredProjects.length === 0 ? (
             <div className="text-center py-16">
-              <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center mx-auto mb-6 transition-all duration-300 hover:scale-110">
+              <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center mx-auto mb-6 transition-all duration-300 hover:scale-110">
                 <Briefcase className="h-12 w-12 text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4 transition-all duration-300">Projects Coming Soon</h3>
-              <p className="text-gray-600 mb-8 transition-all duration-300">We're currently working on some amazing projects.</p>
+              <h3 className="text-xl font-semibold text-white mb-4 transition-all duration-300">Projects Coming Soon</h3>
+              <p className="text-gray-300 mb-8 transition-all duration-300">We're currently working on some amazing projects.</p>
               <Link to="/sign-up">
-                <Button className="bg-gray-900 hover:bg-gray-800 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg">
                   Be the First to See Them
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((item) => (
-                <Card key={item._id} className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-3 group">
-                  {/* Project Image Placeholder */}
-                  <div className="h-48 bg-gray-200 flex items-center justify-center transition-all duration-300 group-hover:bg-gray-300">
-                    <Monitor className="h-12 w-12 text-gray-400 transition-all duration-300 group-hover:scale-110" />
-                  </div>
-                  
-                  <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <Badge variant="secondary" className="bg-gray-100 text-gray-700 transition-all duration-300 hover:bg-gray-200">
-                        {getCategoryLabel(item.category)}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-xl font-bold text-gray-900 mb-3 transition-all duration-300 group-hover:text-gray-600">
-                      {item.name}
-                    </CardTitle>
-                    {item.shortDescription && (
-                      <CardDescription className="text-gray-600 transition-all duration-300">
-                        {item.shortDescription}
-                      </CardDescription>
-                    )}
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    {/* Technologies */}
-                    {item.technologies.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {item.technologies.slice(0, 3).map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs transition-all duration-300 hover:bg-gray-200"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                        {item.technologies.length > 3 && (
-                          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs transition-all duration-300 hover:bg-gray-200">
-                            +{item.technologies.length - 3} more
-                          </span>
+            <motion.div 
+              className="space-y-8"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
+              variants={staggerContainerVariants}
+            >
+              {/* Top Row - 3 smaller cards */}
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                variants={staggerContainerVariants}
+              >
+                {filteredProjects.slice(0, 3).map((item) => (
+                  <motion.div key={item._id} variants={cardVariants}>
+                    <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-500 hover:-translate-y-2 group cursor-pointer">
+                      {/* Project Image */}
+                      <div className="h-48 bg-gray-700 overflow-hidden rounded-t-lg transition-all duration-300 group-hover:bg-gray-600">
+                        {item.images && item.images.length > 0 ? (
+                          <img
+                            src={item.images.find(img => img.isFeatured)?.url || item.images[0].url}
+                            alt={item.images.find(img => img.isFeatured)?.alt || item.name}
+                            className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Monitor className="h-12 w-12 text-gray-500 transition-all duration-300 group-hover:scale-110" />
+                          </div>
                         )}
                       </div>
-                    )}
+                      
+                      <CardContent className="p-4">
+                        <CardTitle className="text-lg font-bold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">
+                          {item.name}
+                        </CardTitle>
+                        <p className="text-gray-400 text-sm transition-all duration-300">
+                          {getCategoryLabel(item.category)}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
 
-                    {/* Project Stats */}
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center">
-                          <Eye className="h-3 w-3 mr-1" />
-                          <span>1.2k views</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Heart className="h-3 w-3 mr-1" />
-                          <span>89 likes</span>
-                        </div>
+              {/* Bottom Row - 2 larger cards */}
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                variants={staggerContainerVariants}
+              >
+                {filteredProjects.slice(3, 5).map((item) => (
+                  <motion.div key={item._id} variants={cardVariants}>
+                    <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-500 hover:-translate-y-2 group cursor-pointer">
+                      {/* Project Image */}
+                      <div className="h-64 bg-gray-700 overflow-hidden rounded-t-lg transition-all duration-300 group-hover:bg-gray-600">
+                        {item.images && item.images.length > 0 ? (
+                          <img
+                            src={item.images.find(img => img.isFeatured)?.url || item.images[0].url}
+                            alt={item.images.find(img => img.isFeatured)?.alt || item.name}
+                            className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Monitor className="h-16 w-16 text-gray-500 transition-all duration-300 group-hover:scale-110" />
+                          </div>
+                        )}
                       </div>
-                      {item.completionDate && (
-                        <span>{formatDate(item.completionDate)}</span>
-                      )}
-                    </div>
-
-                    {/* View Project Button */}
-                    <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white transition-all duration-300 hover:scale-105 group/btn">
-                      <span className="flex items-center justify-center">
-                        View Project
-                        <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                      </span>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      
+                      <CardContent className="p-6">
+                        <CardTitle className="text-xl font-bold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">
+                          {item.name}
+                        </CardTitle>
+                        <p className="text-gray-400 text-sm transition-all duration-300">
+                          {getCategoryLabel(item.category)}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
           )}
 
           {/* View All Projects CTA */}
           <div className="text-center mt-16">
             <Link to="/sign-in">
-              <Button className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 transition-all duration-300 hover:scale-105 hover:shadow-lg group">
                 <span className="flex items-center">
                   Explore All Projects
                   <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
@@ -545,198 +796,336 @@ const Homepage = () => {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white code-bg-pattern relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105"
+              variants={textVariants}
+            >
               Why Choose Us
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700">
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700"
+              variants={textVariants}
+            >
               We combine technical expertise with clean design to deliver exceptional results.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center space-y-4 group">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainerVariants}
+          >
+            <motion.div className="text-center space-y-4 group" variants={itemVariants}>
               <div className="w-16 h-16 bg-gray-900 rounded-lg flex items-center justify-center mx-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                 <Zap className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Modern Technologies</h3>
               <p className="text-gray-600 transition-all duration-300">Built with the latest frameworks and tools for optimal performance.</p>
-            </div>
+            </motion.div>
 
-            <div className="text-center space-y-4 group">
+            <motion.div className="text-center space-y-4 group" variants={itemVariants}>
               <div className="w-16 h-16 bg-gray-900 rounded-lg flex items-center justify-center mx-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                 <Clock className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Fast Delivery</h3>
               <p className="text-gray-600 transition-all duration-300">Quick turnaround times without compromising on quality.</p>
-            </div>
+            </motion.div>
 
-            <div className="text-center space-y-4 group">
+            <motion.div className="text-center space-y-4 group" variants={itemVariants}>
               <div className="w-16 h-16 bg-gray-900 rounded-lg flex items-center justify-center mx-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                 <Users className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Collaborative</h3>
               <p className="text-gray-600 transition-all duration-300">We work closely with you throughout the entire process.</p>
-            </div>
+            </motion.div>
 
-            <div className="text-center space-y-4 group">
+            <motion.div className="text-center space-y-4 group" variants={itemVariants}>
               <div className="w-16 h-16 bg-gray-900 rounded-lg flex items-center justify-center mx-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                 <TrendingUp className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Results Driven</h3>
               <p className="text-gray-600 transition-all duration-300">Transparent pricing with excellent value for your investment.</p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105"
+              variants={textVariants}
+            >
               What Our Clients Say
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700">
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700"
+              variants={textVariants}
+            >
               Don't just take our word for it. Here's what our satisfied clients have to say.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
-                    <span className="text-white font-bold">J</span>
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainerVariants}
+          >
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
+                      <span className="text-white font-bold">J</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">John Smith</h4>
+                      <p className="text-gray-600 text-sm transition-all duration-300">CEO, TechStart Inc.</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">John Smith</h4>
-                    <p className="text-gray-600 text-sm transition-all duration-300">CEO, TechStart Inc.</p>
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                    ))}
                   </div>
-                </div>
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <blockquote className="text-gray-600 italic transition-all duration-300">
-                  "The team delivered an exceptional e-commerce website that exceeded our expectations."
-                </blockquote>
-              </CardContent>
-            </Card>
+                  <blockquote className="text-gray-600 italic transition-all duration-300">
+                    "The team delivered an exceptional e-commerce website that exceeded our expectations."
+                  </blockquote>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
-                    <span className="text-white font-bold">S</span>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
+                      <span className="text-white font-bold">S</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Sarah Johnson</h4>
+                      <p className="text-gray-600 text-sm transition-all duration-300">Founder, Creative Agency</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Sarah Johnson</h4>
-                    <p className="text-gray-600 text-sm transition-all duration-300">Founder, Creative Agency</p>
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                    ))}
                   </div>
-                </div>
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <blockquote className="text-gray-600 italic transition-all duration-300">
-                  "Professional, responsive, and incredibly talented. They transformed our vision perfectly."
-                </blockquote>
-              </CardContent>
-            </Card>
+                  <blockquote className="text-gray-600 italic transition-all duration-300">
+                    "Professional, responsive, and incredibly talented. They transformed our vision perfectly."
+                  </blockquote>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-            <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
-                    <span className="text-white font-bold">M</span>
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center mr-4 transition-all duration-300 group-hover:scale-110">
+                      <span className="text-white font-bold">M</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Mike Chen</h4>
+                      <p className="text-gray-600 text-sm transition-all duration-300">Product Manager, StartupXYZ</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Mike Chen</h4>
-                    <p className="text-gray-600 text-sm transition-all duration-300">Product Manager, StartupXYZ</p>
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                    ))}
                   </div>
-                </div>
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <blockquote className="text-gray-600 italic transition-all duration-300">
-                  "Fast delivery, excellent communication, and a final product that perfectly matches our requirements."
-                </blockquote>
-              </CardContent>
-            </Card>
-          </div>
+                  <blockquote className="text-gray-600 italic transition-all duration-300">
+                    "Fast delivery, excellent communication, and a final product that perfectly matches our requirements."
+                  </blockquote>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Contact CTA Section */}
-      <section id="contact" className="py-20 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 transition-all duration-700 hover:scale-105">
-            Let's Build Something Together
-          </h2>
-          
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-12 transition-all duration-700">
-            Ready to transform your digital presence? Get in touch with us and let's discuss your project.
-          </p>
-
-          {/* Contact Methods */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="flex flex-col items-center space-y-4 group">
-              <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-gray-700">
-                <Mail className="h-6 w-6 text-white" />
-              </div>
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">Email Us</h3>
-                <p className="text-gray-300 transition-all duration-300">hello@materix.com</p>
-              </div>
-            </div>
+      {/* Contact & Testimonials Section */}
+      <section id="contact" className="py-20 bg-white code-bg-pattern relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={staggerContainerVariants}
+          >
             
-            <div className="flex flex-col items-center space-y-4 group">
-              <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-gray-700">
-                <Phone className="h-6 w-6 text-white" />
+            {/* Left Column - Contact Information */}
+            <motion.div 
+              className="bg-gray-900 rounded-2xl p-8 lg:p-12"
+              variants={cardVariants}
+            >
+              <div className="flex items-center space-x-3 mb-8">
+                <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">M</span>
+                </div>
               </div>
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">Call Us</h3>
-                <p className="text-gray-300 transition-all duration-300">+1 (555) 123-4567</p>
-              </div>
-            </div>
-            
-            <div className="flex flex-col items-center space-y-4 group">
-              <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-gray-700">
-                <MapPin className="h-6 w-6 text-white" />
-              </div>
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">Visit Us</h3>
-                <p className="text-gray-300 transition-all duration-300">San Francisco, CA</p>
-              </div>
-            </div>
-          </div>
+              
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 transition-all duration-700">
+                Available for select freelance opportunities
+              </h2>
+              
+              <p className="text-lg text-gray-300 mb-8 transition-all duration-700">
+                Have an exciting project you need help with? Send me an email or contact me via instant message!
+              </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/sign-up">
-              <Button className="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-                <span className="flex items-center">
-                  Start Your Project
-                  <Send className="h-5 w-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                </span>
-              </Button>
-            </Link>
-            <Link to="/sign-in">
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900 px-8 py-3 text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg group">
-                <span className="flex items-center">
-                  Schedule a Call
-                  <Calendar className="h-5 w-5 ml-2 group-hover:scale-110 transition-transform duration-300" />
-                </span>
-              </Button>
-            </Link>
-          </div>
+              {/* Contact Details */}
+              <div className="space-y-6">
+                <div className="group">
+                  <a 
+                    href="mailto:hello@materix.com" 
+                    className="text-white text-lg font-medium hover:text-blue-400 transition-all duration-300 border-b border-blue-400 pb-1 hover:border-blue-300"
+                  >
+                    hello@materix.com
+                  </a>
+                </div>
+                
+                <div className="space-y-4">
+                  <h3 className="text-white font-semibold text-lg">Connect with us:</h3>
+                  <div className="flex flex-wrap gap-4">
+                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
+                      Messenger
+                    </a>
+                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
+                      LinkedIn
+                    </a>
+                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
+                      Instagram
+                    </a>
+                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
+                      Github
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Right Column - Testimonials */}
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              variants={staggerContainerVariants}
+            >
+              {/* Testimonial 1 - Purple */}
+              <motion.div variants={cardVariants}>
+                <Card className="bg-purple-600 border-0 text-white hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                  <CardContent className="p-6 relative">
+                    <div className="absolute top-4 left-4 text-4xl font-bold opacity-20">"</div>
+                    <div className="absolute top-4 right-4">
+                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-purple-600 font-bold text-sm">MG</span>
+                      </div>
+                    </div>
+                    <div className="mt-8 mb-4">
+                      <blockquote className="text-white text-sm leading-relaxed">
+                        "Materix was instrumental in developing our website. Their responsiveness, organization, and strategic thinking made the entire process seamless."
+                      </blockquote>
+                    </div>
+                    <div className="text-sm">
+                      <p className="font-semibold">Mark Greenspan</p>
+                      <p className="opacity-80">Founder at influenceTHIS Canada</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Testimonial 2 - Blue */}
+              <motion.div variants={cardVariants}>
+                <Card className="bg-blue-600 border-0 text-white hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                  <CardContent className="p-6 relative">
+                    <div className="absolute top-4 left-4 text-4xl font-bold opacity-20">"</div>
+                    <div className="absolute top-4 right-4">
+                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-bold text-sm">WH</span>
+                      </div>
+                    </div>
+                    <div className="mt-8 mb-4">
+                      <blockquote className="text-white text-sm leading-relaxed">
+                        "Materix is AMAZING! If you have any doubt about hiring them, ask me – I am really impressed by this team!"
+                      </blockquote>
+                    </div>
+                    <div className="text-sm">
+                      <p className="font-semibold">Wilfried Hajek</p>
+                      <p className="opacity-80">Agile Coach | Speaker | Trainer</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Testimonial 3 - Purple */}
+              <motion.div variants={cardVariants}>
+                <Card className="bg-purple-600 border-0 text-white hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                  <CardContent className="p-6 relative">
+                    <div className="absolute top-4 left-4 text-4xl font-bold opacity-20">"</div>
+                    <div className="absolute top-4 right-4">
+                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-purple-600 font-bold text-sm">JC</span>
+                      </div>
+                    </div>
+                    <div className="mt-8 mb-4">
+                      <blockquote className="text-white text-sm leading-relaxed">
+                        "One of the best professionals in web development. Great communication and accuracy in complex projects."
+                      </blockquote>
+                    </div>
+                    <div className="text-sm">
+                      <p className="font-semibold">Jonathan Castro</p>
+                      <p className="opacity-80">CEO & Founder at The Cliff</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Testimonial 4 - Blue */}
+              <motion.div variants={cardVariants}>
+                <Card className="bg-blue-600 border-0 text-white hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                  <CardContent className="p-6 relative">
+                    <div className="absolute top-4 left-4 text-4xl font-bold opacity-20">"</div>
+                    <div className="absolute top-4 right-4">
+                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-bold text-sm">SM</span>
+                      </div>
+                    </div>
+                    <div className="mt-8 mb-4">
+                      <blockquote className="text-white text-sm leading-relaxed">
+                        "Exceptional quality and attention to detail. They delivered exactly what we envisioned and more."
+                      </blockquote>
+                    </div>
+                    <div className="text-sm">
+                      <p className="font-semibold">Sarah Mitchell</p>
+                      <p className="opacity-80">Marketing Director at TechFlow</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
