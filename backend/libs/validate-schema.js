@@ -68,6 +68,11 @@ const taskSchema = z.object({
   assignees: z.array(z.string()).min(1, "At least one assignee is required"),
 });
 
+const workspaceAssignmentSchema = z.object({
+  workspaceId: z.string().min(1, "Workspace ID is required"),
+  role: z.enum(["viewer", "member", "admin", "owner"]).optional(),
+});
+
 export {
   registerSchema,
   loginSchema,
@@ -78,4 +83,5 @@ export {
   taskSchema,
   inviteMemberSchema,
   tokenSchema,
+  workspaceAssignmentSchema,
 };

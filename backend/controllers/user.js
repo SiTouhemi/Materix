@@ -12,7 +12,7 @@ const getUserProfile = async (req, res) => {
 
     // jfkd
 
-    res.status(200).json(user);
+    res.status(200).json({ user });
   } catch (error) {
     console.error("Error fetching user profile:", error);
 

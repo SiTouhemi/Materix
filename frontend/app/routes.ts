@@ -9,6 +9,13 @@ export default [
   // Public home page (not wrapped in auth layout)
   index("routes/root/home.tsx"),
   
+  // Legal pages (public)
+  route("legal/terms-of-service", "routes/legal/terms-of-service.tsx"),
+  route("legal/privacy-policy", "routes/legal/privacy-policy.tsx"),
+  
+  // Support pages (public)
+  route("support/help-center", "routes/support/help-center.tsx"),
+  
   layout("routes/auth/auth-layout.tsx", [
     route("sign-in", "routes/auth/sign-in.tsx"),
     route("sign-up", "routes/auth/sign-up.tsx"),
@@ -51,10 +58,14 @@ export default [
 
   // Admin routes
   route("admin/login", "routes/admin/admin-login.tsx"),
-  route("admin", "routes/admin/admin-dashboard.tsx"),
-  route("admin/portfolio", "routes/admin/admin-portfolio.tsx"),
-  route("admin/portfolio/new", "routes/admin/admin-portfolio-new.tsx"),
-  route("admin/portfolio/:id", "routes/admin/admin-portfolio-edit.tsx"),
-  route("admin/analytics", "routes/admin/admin-analytics.tsx"),
-  route("admin/settings", "routes/admin/admin-settings.tsx"),
+  layout("routes/admin/admin-layout.tsx", [
+    route("admin", "routes/admin/admin-dashboard.tsx"),
+    route("admin/portfolio", "routes/admin/admin-portfolio.tsx"),
+    route("admin/portfolio/new", "routes/admin/admin-portfolio-new.tsx"),
+    route("admin/portfolio/:id", "routes/admin/admin-portfolio-edit.tsx"),
+    route("admin/analytics", "routes/admin/admin-analytics.tsx"),
+    route("admin/settings", "routes/admin/admin-settings.tsx"),
+    route("admin/users", "routes/admin/admin-user-management.tsx"),
+    route("admin/workspace-assignments", "routes/admin/admin-workspace-assignment.tsx"),
+  ]),
 ] satisfies RouteConfig;

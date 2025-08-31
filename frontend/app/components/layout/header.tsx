@@ -12,8 +12,9 @@ import {
   DropdownMenuGroup,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
-import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { WorkspaceAvatar } from "../workspace/workspace-avatar";
+import { useGetWorkspacesQuery } from "@/hooks/use-workspace";
 
 interface HeaderProps {
   onWorkspaceSelected: (workspace: Workspace) => void;
@@ -29,8 +30,8 @@ export const Header = ({
   const navigate = useNavigate();
 
   const { user, logout } = useAuth();
-  const loaderData = useLoaderData() as { workspaces: Workspace[] } | undefined;
-  const workspaces = loaderData?.workspaces || [];
+  const { data: workspacesData } = useGetWorkspacesQuery();
+  const workspaces = (workspacesData as any)?.workspaces || [];
   const isOnWorkspacePage = useLocation().pathname.includes("/workspace");
 
   const handleOnClick = (workspace: Workspace) => {
@@ -73,7 +74,7 @@ export const Header = ({
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              {workspaces.map((ws) => (
+              {workspaces.map((ws: any) => (
                 <DropdownMenuItem
                   key={ws._id}
                   onClick={() => handleOnClick(ws)}

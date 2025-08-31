@@ -17,6 +17,15 @@ const userSchema = new Schema(
     is2FAEnabled: { type: Boolean, default: false },
     twoFAOtp: { type: String, select: false },
     twoFAOtpExpires: { type: Date, select: false },
+    defaultRole: {
+      type: String,
+      enum: ["viewer", "member", "admin", "owner"],
+      default: "viewer",
+    },
+    isApproved: {
+      type: Boolean,
+      default: false, // Only approved users can create workspaces
+    },
   },
   { timestamps: true }
 );

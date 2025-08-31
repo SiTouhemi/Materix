@@ -2,6 +2,7 @@ import Workspace from "../models/workspace.js";
 import Project from "../models/project.js";
 import User from "../models/user.js";
 import WorkspaceInvite from "../models/workspace-invite.js";
+import UserWorkspaceAssignment from "../models/user-workspace-assignment.js";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../libs/send-email.js";
 import { recordActivity } from "../libs/index.js";
@@ -9,6 +10,13 @@ import { recordActivity } from "../libs/index.js";
 const createWorkspace = async (req, res) => {
   try {
     const { name, description, color } = req.body;
+
+    // Check if user is approved to create workspaces
+    if (!req.user.isApproved) {
+      return res.status(403).json({
+        message: "You need approval to create workspaces. Please contact the administrator.",
+      });
+    }
 
     const workspace = await Workspace.create({
       name,
@@ -35,11 +43,36 @@ const createWorkspace = async (req, res) => {
 
 const getWorkspaces = async (req, res) => {
   try {
-    const workspaces = await Workspace.find({
-      "members.user": req.user._id,
-    }).sort({ createdAt: -1 });
+    // Get admin-assigned workspaces for this user
+    const adminAssignments = await UserWorkspaceAssignment.find({
+      user: req.user._id,
+      isActive: true,
+    }).populate("workspace");
 
-    res.status(200).json(workspaces);
+    // Get workspace IDs from admin assignments (filter out any null/undefined values)
+    const assignedWorkspaceIds = adminAssignments
+      .map(assignment => assignment.workspace?._id)
+      .filter(id => id != null);
+
+    // Get workspaces where user is a member (either through admin assignment or direct membership)
+    const workspaces = await Workspace.find({
+      $or: [
+        { "members.user": req.user._id },
+        ...(assignedWorkspaceIds.length > 0 ? [{ _id: { $in: assignedWorkspaceIds } }] : [])
+      ]
+    }).populate("members.user", "name email profilePicture").sort({ createdAt: -1 });
+
+    // Add debug info to response
+    res.status(200).json({
+      workspaces,
+      debug: {
+        userId: req.user._id,
+        adminAssignmentsCount: adminAssignments.length,
+        assignedWorkspaceIds,
+        totalWorkspacesFound: workspaces.length,
+        workspaceNames: workspaces.map(w => w.name)
+      }
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -52,13 +85,36 @@ const getWorkspaceDetails = async (req, res) => {
   try {
     const { workspaceId } = req.params;
 
-    const workspace = await Workspace.findById({
-      _id: workspaceId,
-    }).populate("members.user", "name email profilePicture");
+    // Validate workspaceId is not null or invalid
+    if (!workspaceId || workspaceId === 'null' || workspaceId === 'undefined') {
+      return res.status(400).json({
+        message: "Invalid workspace ID",
+      });
+    }
+
+    // Check if user has access to this workspace
+    const adminAssignment = await UserWorkspaceAssignment.findOne({
+      user: req.user._id,
+      workspace: workspaceId,
+      isActive: true,
+    });
+
+    const workspace = await Workspace.findById(workspaceId).populate("members.user", "name email profilePicture");
 
     if (!workspace) {
       return res.status(404).json({
         message: "Workspace not found",
+      });
+    }
+
+    // Check if user is a member or has admin assignment
+    const isMember = workspace.members.some(
+      (member) => member.user._id.toString() === req.user._id.toString()
+    );
+
+    if (!isMember && !adminAssignment) {
+      return res.status(403).json({
+        message: "You don't have access to this workspace",
       });
     }
 
@@ -75,10 +131,22 @@ const getWorkspaceProjects = async (req, res) => {
   try {
     const { workspaceId } = req.params;
 
-    const workspace = await Workspace.findOne({
-      _id: workspaceId,
-      "members.user": req.user._id,
-    }).populate("members.user", "name email profilePicture");
+    // Validate workspaceId is not null or invalid
+    if (!workspaceId || workspaceId === 'null' || workspaceId === 'undefined') {
+      return res.status(400).json({
+        message: "Invalid workspace ID",
+      });
+    }
+
+    // Check if user has admin assignment to this workspace
+    const adminAssignment = await UserWorkspaceAssignment.findOne({
+      user: req.user._id,
+      workspace: workspaceId,
+      isActive: true,
+    });
+
+    // Get workspace with member check
+    const workspace = await Workspace.findById(workspaceId).populate("members.user", "name email profilePicture");
 
     if (!workspace) {
       return res.status(404).json({
@@ -86,10 +154,20 @@ const getWorkspaceProjects = async (req, res) => {
       });
     }
 
+    // Check if user is a member or has admin assignment
+    const isMember = workspace.members.some(
+      (member) => member.user._id.toString() === req.user._id.toString()
+    );
+
+    if (!isMember && !adminAssignment) {
+      return res.status(403).json({
+        message: "You don't have access to this workspace",
+      });
+    }
+
     const projects = await Project.find({
       workspace: workspaceId,
       isArchived: false,
-      members: { $elemMatch: { user: req.user._id } },
     })
       .populate("tasks", "status")
       .sort({ createdAt: -1 });

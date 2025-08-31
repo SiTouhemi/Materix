@@ -32,6 +32,7 @@ const registerUser = async (req, res) => {
       password: hashPassword,
       name,
       isEmailVerified: true, // Auto-verify users
+      defaultRole: "viewer", // New users get viewer role by default
     });
 
     const token = jwt.sign(

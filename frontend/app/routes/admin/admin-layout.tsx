@@ -10,7 +10,9 @@ import {
   Menu, 
   X,
   User,
-  BarChart3
+  BarChart3,
+  Users,
+  Building2
 } from "lucide-react";
 import type { AdminData } from "@/types";
 
@@ -106,6 +108,16 @@ const AdminLayout = () => {
       name: "Portfolio",
       href: "/admin/portfolio",
       icon: Briefcase,
+    },
+    {
+      name: "Users",
+      href: "/admin/users",
+      icon: Users,
+    },
+    {
+      name: "Workspace Assignments",
+      href: "/admin/workspace-assignments",
+      icon: Building2,
     },
     {
       name: "Analytics",

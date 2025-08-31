@@ -14,13 +14,13 @@ import { useGetWorkspacesQuery } from "@/hooks/use-workspace";
 import type { Workspace } from "@/types";
 import { PlusCircle, Users } from "lucide-react";
 import { useState } from "react";
-import { Link, useLoaderData } from "react-router";
+import { Link } from "react-router";
 import { format } from "date-fns";
 
 const Workspaces = () => {
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
   const { data, isLoading } = useGetWorkspacesQuery();
-  const workspaces = data?.data?.workspaces || [];
+  const workspaces = (data as any)?.workspaces || [];
 
   if (isLoading) {
     return <Loader />;
@@ -39,7 +39,7 @@ const Workspaces = () => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {workspaces.map((ws) => (
+          {workspaces.map((ws: any) => (
             <WorkspaceCard key={ws._id} workspace={ws} />
           ))}
 

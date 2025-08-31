@@ -16,7 +16,8 @@ import {
   LogOut,
   Menu,
   X,
-  BarChart3
+  BarChart3,
+  Users
 } from "lucide-react";
 import { Link, useLocation, Navigate } from "react-router";
 import type { AdminData } from "@/types";
@@ -161,6 +162,11 @@ const AdminDashboard = () => {
       name: "Portfolio",
       href: "/admin/portfolio",
       icon: Briefcase,
+    },
+    {
+      name: "Users",
+      href: "/admin/users",
+      icon: Users,
     },
     {
       name: "Analytics",

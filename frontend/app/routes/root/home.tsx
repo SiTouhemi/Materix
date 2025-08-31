@@ -24,6 +24,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { Link } from "react-router";
+import { ContactForm } from "@/components/contact-form";
 
 interface PortfolioItem {
   _id: string;
@@ -171,12 +172,16 @@ const Homepage = () => {
     try {
       const response = await fetch("/api/portfolio");
       
-      if (response.ok) {
-        const data = await response.json();
-        setPortfolioItems(data.data.portfolioItems || []);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      const data = await response.json();
+      setPortfolioItems(data.data?.portfolioItems || []);
     } catch (error) {
       console.error("Error fetching portfolio items:", error);
+      // Don't set error, just use empty array to show sample projects
+      setPortfolioItems([]);
     } finally {
       setIsLoading(false);
     }
@@ -229,11 +234,13 @@ const Homepage = () => {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-gray-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600">Loading our amazing work...</p>
         </div>
       </div>
     );
   }
+
+
 
   return (
     <div className="min-h-screen bg-white scroll-smooth">
@@ -293,6 +300,7 @@ const Homepage = () => {
             
             <div className="hidden md:flex items-center space-x-8">
               <a href="#services" className="text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 hover:scale-105">Services</a>
+              <a href="#about" className="text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 hover:scale-105">About</a>
               <a href="#portfolio" className="text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 hover:scale-105">Portfolio</a>
               <a href="#technologies" className="text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 hover:scale-105">Technologies</a>
               <a href="#contact" className="text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 hover:scale-105">Contact</a>
@@ -566,6 +574,160 @@ const Homepage = () => {
         </div>
       </section>
 
+      {/* About Us Section */}
+      <section id="about" className="py-20 bg-white code-bg-pattern relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105"
+              variants={textVariants}
+            >
+              About Our Team
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700"
+              variants={textVariants}
+            >
+              We're a passionate team of developers, designers, and problem-solvers dedicated to creating exceptional digital experiences.
+            </motion.p>
+          </motion.div>
+
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainerVariants}
+          >
+            {/* Team Member 1 */}
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardContent className="p-6 text-center">
+                  <div className="w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:scale-110">
+                    <span className="text-white font-bold text-2xl">A</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 transition-all duration-300 group-hover:text-gray-600">
+                    Alex Chen
+                  </h3>
+                  <p className="text-gray-600 mb-4 transition-all duration-300">Lead Full-Stack Developer</p>
+                  <p className="text-sm text-gray-500 mb-4 transition-all duration-300">
+                    Expert in React, Node.js, and cloud architecture. Passionate about clean code and scalable solutions.
+                  </p>
+                  <div className="flex justify-center space-x-3">
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Linkedin className="h-5 w-5" />
+                    </a>
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Twitter className="h-5 w-5" />
+                    </a>
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Code className="h-5 w-5" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Team Member 2 */}
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardContent className="p-6 text-center">
+                  <div className="w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:scale-110">
+                    <span className="text-white font-bold text-2xl">S</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 transition-all duration-300 group-hover:text-gray-600">
+                    Sarah Kim
+                  </h3>
+                  <p className="text-gray-600 mb-4 transition-all duration-300">UI/UX Designer</p>
+                  <p className="text-sm text-gray-500 mb-4 transition-all duration-300">
+                    Creative designer focused on user-centered design and beautiful, functional interfaces.
+                  </p>
+                  <div className="flex justify-center space-x-3">
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Linkedin className="h-5 w-5" />
+                    </a>
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Twitter className="h-5 w-5" />
+                    </a>
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Palette className="h-5 w-5" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Team Member 3 */}
+            <motion.div variants={cardVariants}>
+              <Card className="bg-white border-gray-200 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 group">
+                <CardContent className="p-6 text-center">
+                  <div className="w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:scale-110">
+                    <span className="text-white font-bold text-2xl">M</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 transition-all duration-300 group-hover:text-gray-600">
+                    Mike Rodriguez
+                  </h3>
+                  <p className="text-gray-600 mb-4 transition-all duration-300">Mobile Developer</p>
+                  <p className="text-sm text-gray-500 mb-4 transition-all duration-300">
+                    Specialized in React Native and native mobile development. Creating seamless mobile experiences.
+                  </p>
+                  <div className="flex justify-center space-x-3">
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Linkedin className="h-5 w-5" />
+                    </a>
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Twitter className="h-5 w-5" />
+                    </a>
+                    <a href="#" className="text-gray-400 hover:text-gray-600 transition-all duration-300">
+                      <Smartphone className="h-5 w-5" />
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+
+          {/* Company Values */}
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={staggerContainerVariants}
+          >
+            <motion.div className="text-center space-y-4 group" variants={itemVariants}>
+              <div className="w-16 h-16 bg-gray-900 rounded-lg flex items-center justify-center mx-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <Users className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Collaboration</h3>
+              <p className="text-gray-600 transition-all duration-300">We believe in the power of teamwork and close collaboration with our clients.</p>
+            </motion.div>
+
+            <motion.div className="text-center space-y-4 group" variants={itemVariants}>
+              <div className="w-16 h-16 bg-gray-900 rounded-lg flex items-center justify-center mx-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <Zap className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Innovation</h3>
+              <p className="text-gray-600 transition-all duration-300">We stay ahead of the curve with the latest technologies and best practices.</p>
+            </motion.div>
+
+            <motion.div className="text-center space-y-4 group" variants={itemVariants}>
+              <div className="w-16 h-16 bg-gray-900 rounded-lg flex items-center justify-center mx-auto transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <Shield className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300 group-hover:text-gray-600">Quality</h3>
+              <p className="text-gray-600 transition-all duration-300">We never compromise on quality, delivering excellence in every project.</p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Technologies Section */}
       <section id="technologies" className="py-20 bg-white code-bg-pattern relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -691,13 +853,97 @@ const Homepage = () => {
               <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center mx-auto mb-6 transition-all duration-300 hover:scale-110">
                 <Briefcase className="h-12 w-12 text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-4 transition-all duration-300">Projects Coming Soon</h3>
-              <p className="text-gray-300 mb-8 transition-all duration-300">We're currently working on some amazing projects.</p>
-              <Link to="/sign-up">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                  Be the First to See Them
-                </Button>
-              </Link>
+              <h3 className="text-xl font-semibold text-white mb-4 transition-all duration-300">Featured Projects</h3>
+              <p className="text-gray-300 mb-8 transition-all duration-300">Here are some of our recent projects that showcase our expertise.</p>
+              
+              {/* Sample Projects for Demo */}
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.1 }}
+                variants={staggerContainerVariants}
+              >
+                {/* Sample Project 1 */}
+                <motion.div variants={cardVariants}>
+                  <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-500 hover:-translate-y-2 group cursor-pointer">
+                    <div className="h-48 bg-gradient-to-br from-blue-600 to-purple-600 overflow-hidden rounded-t-lg transition-all duration-300 group-hover:bg-gradient-to-br group-hover:from-blue-500 group-hover:to-purple-500">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Monitor className="h-16 w-16 text-white transition-all duration-300 group-hover:scale-110" />
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <CardTitle className="text-lg font-bold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">
+                        E-commerce Platform
+                      </CardTitle>
+                      <p className="text-gray-400 text-sm mb-3 transition-all duration-300">
+                        Full-stack e-commerce solution with payment processing
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">React</Badge>
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">Node.js</Badge>
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">Stripe</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Sample Project 2 */}
+                <motion.div variants={cardVariants}>
+                  <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-500 hover:-translate-y-2 group cursor-pointer">
+                    <div className="h-48 bg-gradient-to-br from-green-600 to-teal-600 overflow-hidden rounded-t-lg transition-all duration-300 group-hover:bg-gradient-to-br group-hover:from-green-500 group-hover:to-teal-500">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Smartphone className="h-16 w-16 text-white transition-all duration-300 group-hover:scale-110" />
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <CardTitle className="text-lg font-bold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">
+                        Mobile Banking App
+                      </CardTitle>
+                      <p className="text-gray-400 text-sm mb-3 transition-all duration-300">
+                        Secure mobile banking application with biometric authentication
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">React Native</Badge>
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">Firebase</Badge>
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">Biometrics</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Sample Project 3 */}
+                <motion.div variants={cardVariants}>
+                  <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-500 hover:-translate-y-2 group cursor-pointer">
+                    <div className="h-48 bg-gradient-to-br from-orange-600 to-red-600 overflow-hidden rounded-t-lg transition-all duration-300 group-hover:bg-gradient-to-br group-hover:from-orange-500 group-hover:to-red-500">
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Palette className="h-16 w-16 text-white transition-all duration-300 group-hover:scale-110" />
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <CardTitle className="text-lg font-bold text-white mb-2 transition-all duration-300 group-hover:text-gray-300">
+                        Design System
+                      </CardTitle>
+                      <p className="text-gray-400 text-sm mb-3 transition-all duration-300">
+                        Comprehensive design system for enterprise applications
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">Figma</Badge>
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">Storybook</Badge>
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">Design Tokens</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </motion.div>
+              
+              <div className="mt-12">
+                <Link to="/sign-up">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    View All Projects
+                  </Button>
+                </Link>
+              </div>
             </div>
           ) : (
             <motion.div 
@@ -971,6 +1217,27 @@ const Homepage = () => {
       <section id="contact" className="py-20 bg-white code-bg-pattern relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
+            className="text-center mb-16"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
+          >
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 transition-all duration-700 hover:scale-105"
+              variants={textVariants}
+            >
+              Let's Work Together
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-600 max-w-2xl mx-auto transition-all duration-700"
+              variants={textVariants}
+            >
+              Ready to start your next project? Get in touch and let's create something amazing together.
+            </motion.p>
+          </motion.div>
+
+          <motion.div 
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16"
             initial="hidden"
             whileInView="visible"
@@ -1011,21 +1278,38 @@ const Homepage = () => {
                 <div className="space-y-4">
                   <h3 className="text-white font-semibold text-lg">Connect with us:</h3>
                   <div className="flex flex-wrap gap-4">
-                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
-                      Messenger
-                    </a>
-                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
+                    <a href="https://linkedin.com/company/materix" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-all duration-300 font-medium flex items-center gap-2">
+                      <Linkedin className="h-4 w-4" />
                       LinkedIn
                     </a>
-                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
-                      Instagram
+                    <a href="https://github.com/materix" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-all duration-300 font-medium flex items-center gap-2">
+                      <Code className="h-4 w-4" />
+                      GitHub
                     </a>
-                    <a href="#" className="text-white hover:text-blue-400 transition-all duration-300 font-medium">
-                      Github
+                    <a href="https://twitter.com/materix" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-all duration-300 font-medium flex items-center gap-2">
+                      <Twitter className="h-4 w-4" />
+                      Twitter
+                    </a>
+                    <a href="https://instagram.com/materix" target="_blank" rel="noopener noreferrer" className="text-white hover:text-blue-400 transition-all duration-300 font-medium flex items-center gap-2">
+                      Instagram
                     </a>
                   </div>
                 </div>
+                
+                <div className="space-y-4">
+                  <h3 className="text-white font-semibold text-lg">Business Hours:</h3>
+                  <p className="text-gray-300 text-sm">
+                    Monday - Friday: 9:00 AM - 6:00 PM EST<br />
+                    Weekend: Available for urgent projects<br />
+                    Response time: Within 24 hours
+                  </p>
+                </div>
               </div>
+            </motion.div>
+
+            {/* Right Column - Contact Form */}
+            <motion.div variants={cardVariants}>
+              <ContactForm />
             </motion.div>
 
             {/* Right Column - Testimonials */}
@@ -1183,9 +1467,9 @@ const Homepage = () => {
                 © 2024 Materix. All rights reserved.
               </p>
               <div className="flex items-center space-x-6">
-                <a href="#" className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105">Privacy Policy</a>
-                <a href="#" className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105">Terms of Service</a>
-                <a href="#" className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105">Cookie Policy</a>
+                <a href="/legal/privacy-policy" className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105">Privacy Policy</a>
+                <a href="/legal/terms-of-service" className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105">Terms of Service</a>
+                <a href="/support/help-center" className="text-gray-400 hover:text-white transition-all duration-300 hover:scale-105">Help Center</a>
               </div>
             </div>
           </div>
